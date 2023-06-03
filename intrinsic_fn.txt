@@ -1,0 +1,183 @@
+#==================
+
+Fn::And
+  - Fn::And acts as an AND operator
+  - Minimum number of condition is 2
+  - Maximum number of condition is 10
+  - Syntax: Fn::And: [condition]
+  - Short: syntax !And [condition]
+  Example:
+  MyAndCondition: !And 
+  - !Equals ["sg-mysggroup", !Ref ASecurityGroup]
+  - !Condition SomeOtherCondition
+
+#==================
+
+Fn::Equals
+  - Returns true if the two values are equal else it will return false
+  - Syntax: Fn::Equals: [value_1, value_2]
+  - Short Syntax: !Equals [value_1, value_2]
+  Example:
+  UserProdCondition:
+  !Equals [!Ref EnvironmentType, prod]
+
+#==================
+
+Fn::If
+  - metadata attribute, update policy attribute, and property values in the Resources
+  - Syntax: Fn::If: [condition_name, value_if_true, value_if_false]
+  - Short syntax: !If [condition_name, value_if_true, value_if_false]
+  Example:
+  - !If [createNewSecurityGroup, !Ref NewSecurityGroup, !Ref ExistingSecurityGroup]
+
+#==================
+
+Fn::Not
+  - Fn::Not acts as NOT operator
+  - Syntax: Fn::Not: [condition]
+  - Short Syntax: !Not [condition]
+  Example:
+  MyNotCondition:
+  !Not [!Equals [!Ref EnvironmentType, prod]]
+
+#==================
+
+Fn::Or
+ - Fn::Or acts as an OR operator
+ - Minimum number of condition is 2
+ - Maximum number of condition is 10
+ - Syntax: Fn::Or: [condition, ...]
+ - Short Syntax: !Or [condition, ...]
+ Example:
+ MyOrCondition:
+ !Or [!Equals [sg-mysggroup, !Ref ASecurityGroup], Condition: SomeOtherCondition]
+
+#==================
+
+# ${LambdaFunction.Arn}
+# !Ref LambdaFunction.Arn
+# !GetAtt LambdaFunction.Arn
+
+
+#==================
+
+# !Join [ '', ['a', 'b', 'c']]
+# abc
+
+# !Join
+#   - ''
+#   -  - 'a'
+#       - 'b'
+#       - 'c'
+
+#==================
+
+Outputs:
+  AccountId:
+    Value: !Ref 'AWS::AccountId'
+  NotificationARN:
+    Value: !Select [ 0, !Ref 'AWS::NotificationARNs' ]
+  Partition:
+    Value: !Ref 'AWS::Partition'
+  Region:
+    Value: !Ref 'AWS::Region'
+  StackId:
+    Value: !Ref 'AWS::StackId' 
+  StackName:
+    Value: !Ref 'AWS::StackName'
+  URLSuffix:
+    Value: !Ref 'AWS::URLSuffix'
+
+#==================
+
+# Fn::Select
+# !Select [ 0, [ adarsh, !Ref AWS::StackName, !Ref Instance ] ]
+
+#==================
+
+# Outputs:
+#   LogicalID:
+#     Description: optional description
+#     Value: Value to return
+#     Export: 
+#       Name: value to export (It should be unique in a region)
+# NOTE: maximum limits of outputs is 200
+
+#==================
+
+# Fn::GetAtt: [ logicalnameresource, attributueName ]
+# !GetAtt logicalName.attributeName
+
+#==================
+
+Fn::Split: [ delimiter, source string ]
+!Split [ delimeter, source string ]
+
+!Split [ ",", "abc,xyz" ]
+[abc, xyz]
+
+!Select [ 1, !Split [ ",", "abc,xyz" ]] => xyz
+
+#==================
+
+Fn::FindinMap: [ MapName/logicalId, TopLevelKey, SecondLevelKey ]
+!FindInMap [ MapName/logicalId, TopLevelKey, SecondLevelKey ]
+
+Returns: value of Second level Key
+
+Mappings:
+  LogicalResource:
+    TopLevelKey1:
+      SecondLevelKey1: valueabc
+      SecondLevelKey2: value123
+    TopLevelKey2:
+      SecondLevelKey1: valuefdg
+      SecondLevelKey2: value542
+
+!FindInMap [ LogicalResource, TopLevelKey1, SecondLevelKey1 ] => Valueabc
+
+#==================
+
+Fn::GetAZs: region
+!GetAZs us-east-1
+
+[ "us-east-1a", "us-east-1b", "us-east-1c" ]
+
+!Select 
+- 1
+- !GetAZs 
+  Ref: 'AWS::Region'
+
+#==================
+
+Fn::ImportValue: sharedValueToImport
+!ImportValue sharedValueToImport
+
+!ImportValue AvailZone
+
+- Export names must be unique within the region across all staqck
+- Cannot delete the stack if another stack is referring to one of its output/exports value
+- Cannot modify or remove the output values that is referenced by another stack
+- The Name Property of an Export cannot be use Ref or GetAttfunctions that is independent on a resource 
+- ImportValue function cannot include Ref or GetAttfunctions that are dependent on a resource
+- Cross-stack references cannot be done aqcross regions. It only works within the same region
+
+#==================
+
+Fn::Cidr: [ ipBlock, count, cidrBits ]
+!Cidr [ ipBlock, count, cidrBits ]
+
+!Cidr [ 10.0.0.0/16, 1, 8 ]
+10.0.0.0/24
+
+#==================
+
+Fn::Base64: value
+!Base64: value
+
+
+#=================
+
+DeletionPolicy: Retain
+DeletionPolicy: SnapShot
+DeletionPolicy: Delete
