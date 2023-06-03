@@ -1,0 +1,53 @@
+Description: 'Create EC2 Instance'
+
+Parameters:
+  InstanceTypeParameter:
+    Description: Select instance type
+    Type: String
+    Default: t2.micro
+    AllowedValues:
+      - t2.micro
+      - m1.small
+      - m1.large
+
+Resources:
+  Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType:
+        Ref: InstanceTypeParameter
+      ImageId: ami-0715c1897453cabd1
+      AvailabilityZone: !Select 
+                        - 1
+                        - !GetAZs 
+                          Ref: 'AWS::Region' 
+      UserData:
+        Fn::Base64:
+          !Sub | 
+            #!/bin/bash
+            apt-get update -y
+            apt-get install docker-compose -y
+            mkdir /home/ubuntu/sample
+      Tags:
+        - Key: Name
+          Value: aws-kgp
+
+Outputs:
+  InstanceAvailabilityZone:
+    Value: !GetAtt Instance.AvailabilityZone
+    Description: Availability Zone
+    Export:
+      Name: "AvailZone"
+  InstanceId:
+    Value: !Ref Instance
+    Description: Instance Information
+    Export:
+      Name: 'Instance'
+
+# Outputs:
+#   LogicalID:
+#     Description: optional description
+#     Value: Value to return
+#     Export: 
+#       Name: value to export (It should be unique in a region)
+# NOTE: maximum limits of outputs is 200

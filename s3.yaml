@@ -1,0 +1,23 @@
+Description: "Create S3"
+
+Parameters:
+  S3BucketName:
+    Description: Enter S3 Bucket Name
+    Type: String
+    MinLength: 3
+    MaxLength: 10
+    AllowedPattern: "[a-z]+"
+
+Resources:
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: 
+        Ref: S3BucketName
+
+Outputs:
+  BucketName:
+    Value:
+      Fn::GetAtt:
+        - S3Bucket
+        - Arn

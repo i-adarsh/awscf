@@ -1,0 +1,27 @@
+Description: 'Create EC2 Instance'
+
+Parameters:
+  InstanceTypeParameter:
+    Description: Select instance type
+    Type: String
+    Default: t2.micro
+    AllowedValues:
+      - t2.micro
+      - m1.small
+      - m1.large
+
+Resources:
+  Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType:
+        Ref: InstanceTypeParameter
+      ImageId: ami-0715c1897453cabd1
+      KeyName: aws-kgp
+      UserData:
+        Fn::Base64:
+          !Sub | 
+            #!/bin/bash
+            apt-get update -y
+            apt-get install docker-compose -y
+            mkdir /home/ubuntu/sample

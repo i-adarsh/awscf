@@ -1,0 +1,31 @@
+Description: "Create S3"
+
+Parameters:
+  S3BucketName:
+    Description: Enter S3 Bucket Name
+    Type: String
+    MinLength: 3
+    MaxLength: 10
+    AllowedPattern: "[a-z]+"
+
+Resources:
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Join [ '-', [ !Ref S3BucketName, !Ref AWS::Region, !Ref AWS::StackName ]]
+
+Outputs:
+  BucketName:
+    Value:
+      Fn::GetAtt:
+        - S3Bucket
+        - Arn
+
+# !Join [ '', ['a', 'b', 'c']]
+# abc
+
+# !Join
+#   - ''
+#   -  - 'a'
+#       - 'b'
+#       - 'c'

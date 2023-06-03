@@ -1,0 +1,5 @@
+
+
+
+# Fn::GetAtt: [ logicalnameresource, attributueName ]
+# !GetAtt logicalName.attributeName

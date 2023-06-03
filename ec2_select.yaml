@@ -1,0 +1,20 @@
+
+Description: "Create EC2 instance | Select"
+Parameters:
+  Environment:
+    Type: String
+    AllowedValues:
+      - dev
+      - prod
+
+Conditions:
+  CreateResources: !Equals [ !Ref Environment, prod ]
+
+Resources:
+  Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: !If [CreateResources, !Select [0, [t2.micro, m1.large]], !Select [1, [t2.micro, m1.large]]]
+      ImageId: ami-0715c1897453cabd1
+# Fn::Select
+# !Select [ 0, [ adarsh, !Ref AWS::StackName, !Ref Instance ] ]

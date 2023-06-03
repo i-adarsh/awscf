@@ -1,0 +1,35 @@
+Description: "Create EC2 Instance"
+
+Parameters:
+  Environment:
+    Type: String
+    AllowedValues:
+     - dev
+     - prod
+     - qa
+
+Mappings:
+  EnvMap:
+    dev:
+      instanceType: t2.micro
+      name: dev
+    qa:
+      instanceType: t2.medium
+      name: qa
+    prod:
+      instanceType: t2.xlarge
+      name: prod
+
+Resources:
+  Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: !FindInMap [EnvMap, !Ref Environment, instanceType]
+      ImageId: ami-0715c1897453cabd1
+      Tags:
+       - Key: "Name"
+         Value: !FindInMap [EnvMap, !Ref Environment, name]
+
+Outputs:
+  InstanceNames:
+    Value: !Ref Instance
